@@ -55,7 +55,11 @@ public class SeriesOfTubesController implements Initializable {
             this.thread = new Thread(this.conn);
 
             this.thread.start();
-            this.conn.input();
+            String output = null;
+            while(output==null){
+                this.conn.input();
+                output = conn.getInput();
+            }
             this.connectionOutput.setText(conn.getInput());
         }
 
