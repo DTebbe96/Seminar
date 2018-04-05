@@ -4,46 +4,73 @@
  * and open the template in the editor.
  */
 package seminarbuild;
+
 import java.util.*;
+import javafx.collections.*;
+
 /**
  *
  * @author Dakota
  */
-public class Player {
-    private HashMap<String, Movie> availableMovies;
+public abstract class Player {
+    private String username;
+    private ArrayList <Film> availableFilms;
     private int maxCache;
     private int bandwidth;
-    private Request[] requests;
-    private Request[] currentAcceptedRequests;
+    private ObservableList<FilmRequest> requests;
     private String ip;
     
     Player(String ip){
         this.ip = ip;
+        this.username = "" + (int)(System.currentTimeMillis()/10000);
         Random randnum = new Random();
-        this.bandwidth = 5 + randnum.nextInt()%10;
-        this.maxCache = 3 + randnum.nextInt()%4;
-        this.availableMovies = new HashMap<>();
-        this.requests = new Request[10];
-        this.currentAcceptedRequests = new Request[10];
+        this.bandwidth = 5;
+        this.maxCache = 4;
+        this.availableFilms = new ArrayList<>();
+        this.requests = FXCollections.observableArrayList();
+    }
+    
+    public String getName(){
+        return this.username;
+    }
+    
+    public Film[] getFilmCache(){
+        Film[] tempFilms = (Film[])this.availableFilms.toArray(new Film[this.availableFilms.size()]);
+        return tempFilms;
+    }
+    
+    public void setName(String name){
+        this.username = name;
+    }
+
+    public ObservableList<FilmRequest> getRequests() {
+        return requests;
+    }
+    
+    public void setRequests(ObservableList<FilmRequest> requests){
+        this.requests = requests;
     }
     
     public int cacheAvail(){
-        return this.maxCache - this.availableMovies.size();
+        return this.maxCache - this.availableFilms.size();
     }
     
     public int bandAvail(){
         int usedBand = 0;
-        for (int i = 0; i < this.currentAcceptedRequests.length; i++) {
-            if (this.currentAcceptedRequests[i]!=null){
-                usedBand += this.availableMovies.get(this.currentAcceptedRequests[i].getMovie()).getBandConsum();
+        
+        for (int i = 0; i < this.requests.size(); i++) {
+            if (this.requests.get(i).isAccepted() && !this.requests.get(i).isComplete()){
+                Film tempFilm = this.requests.get(i).getFilm();
+                usedBand += tempFilm.getBandConsum();
             }
+        
         }
         return this.bandwidth-usedBand;
     }
     
-    public boolean addMovie(Movie movie){
-        if(!this.availableMovies.containsValue(movie)){
-            this.availableMovies.put(movie.getTitle(), movie);
+    public boolean addMovie(Film film){
+        if(!this.availableFilms.contains(film)){
+            this.availableFilms.add(film);
             return true;
         }
         else{
@@ -51,57 +78,38 @@ public class Player {
         }
     }
     
-    public boolean removeMovie(Movie movie){
-        if(this.availableMovies.containsValue(movie)){
-            this.availableMovies.remove(movie.getTitle(), movie);
-            return true;
-        }
-        else{
-            return false;
-        }
+//    public boolean removeMovie(Film film){
+//        if(this.availableFilms.containsValue(film)){
+//            this.availableFilms.remove(film.getTitle(), film);
+//            return true;
+//        }
+//        else{
+//            return false;
+//        }
+//    }
+    
+    private int findRequest(FilmRequest request){
+        return this.requests.indexOf(request);
     }
     
-    private int findRequest(Request request){
-        int location = -1;
+    public void addRequest(FilmRequest request){
         
-        for (int i = 0; i < this.requests.length; i++) {
-            if(this.requests[i]==request){
-                location = i;
-                break;
-            }
-        }
         
-        return location;
+        this.requests.add(request);
+       
     }
     
-    public void addRequest(Request request){
-        int location = this.findRequest(null);
-        if(location != -1){
-            this.requests[location] = request;
-        }
+    public void removeRequest(FilmRequest request){
+        this.requests.remove(request);
     }
     
-    public void removeRequest(Request request){
-        int location = this.findRequest(request);
-        if(location != -1){
-            this.requests[location] = null;
-        }
-    }
-    
-    public boolean acceptRequest(Request request){
+    public boolean acceptRequest(FilmRequest request){
         boolean accepted = false;
         
         int location = this.findRequest(request);
-        
         if(location != -1){
-            request.accept();
-            this.removeRequest(request);
-            
-            for (int i = 0; i < this.currentAcceptedRequests.length; i++) {
-                if(this.currentAcceptedRequests[i] == null){
-                    this.currentAcceptedRequests[i] = request;
-                }
-            }
+            System.out.println("accepted");
+            accepted = this.requests.get(location).accept();
         }
         
         return accepted;
@@ -110,4 +118,16 @@ public class Player {
     public String getIp() {
         return ip;
     }
+    
+    public void update(){
+        
+        for(int i =0; i< this.requests.size(); i++){
+            FilmRequest f = this.requests.get(i);
+            if(f.isAccepted()&&(f.getTime()==0)){
+                this.removeRequest(f);
+            }
+            f.update();
+        }
+    }
+    
 }

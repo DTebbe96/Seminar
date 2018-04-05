@@ -9,12 +9,12 @@ package seminarbuild;
  *
  * @author Dakota
  */
-public class Movie {
+public class Film {
     private String title;
     private int bandConsum;
     private int duration;
     
-    Movie (String title, int bandConsum, int duration){
+    Film (String title, int bandConsum, int duration){
         this.title = title;
         this.bandConsum = bandConsum;
         this.duration = duration;
