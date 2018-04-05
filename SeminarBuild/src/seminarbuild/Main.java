@@ -36,49 +36,48 @@ public class Main {
     
     public static void main(String[] args) {
 //        launch (args);
-//        Scanner in = new Scanner(System.in);
-//        
-//        FilmRequest reqTest0 = new FilmRequest(new Film("Lilt", 1, 20), "John");
-//        FilmRequest reqTest1 = new FilmRequest(new Film("Trend", 1, 10), "Taylor");
-//        FilmRequest reqTest2 = new FilmRequest(new Film("Corn", 1, 5), "Boris");
-//        
-//        ObservableList<FilmRequest> requests = FXCollections.observableArrayList();
-//        requests.add(reqTest0);
-//        requests.add(reqTest1);
-//        requests.add(reqTest2);
-//        
-//        Server game = new Server();
-//        game.assignFilms();
-//        
-//        System.out.println("Welcome to Series of Tubes!!");
-//
-//        while(true){
-//            String lnBrk = "-----------------";
-//            System.out.println(lnBrk + "\nPlease select a film or type ''close'' to close:");
-//            for (int i = 0; i < requests.size(); i++) {
-//                System.out.println("--" + i + " " + requests.get(i).getFilmName() +
-//                        " Requested by " + requests.get(i).getName());
-//            }
-//            String input = in.nextLine();
-//            if(input.compareToIgnoreCase("Close")==0){
-//                System.exit(0);
-//            }
-//            int choice = Integer.parseInt(input);
-//            System.out.println("Accepting " + requests.get(choice).getFilmName());
-//            game.accept(requests.get(choice));
-//        }
+
+        Scanner input = new Scanner(System.in);
+
         ObservableList<Player> players = FXCollections.observableArrayList();
         Server game = new Server(players);
-        game.update();
+        game.update();//delete later
+        
         players = game.getPlayers();
-        Player temp = players.get(0);
+        Player main = players.get(0);
         
-        ObservableList <FilmRequest> requests = temp.getRequests();
+        ObservableList <FilmRequest> requests = main.getRequests();
         
-        boolean acceptRequest = temp.acceptRequest(requests.get(0));
+        System.out.print("Welcome! Please enter your name: ");
+        main.setName(input.next());
         
-        while(temp.bandAvail()==4){
-            game.update();
+        System.out.println("Welcome " + main.getName() + "!");
+        
+        Thread t = new Thread(game);
+        t.start();
+        
+        while(game.totalRequests()!=0){
+            System.out.println("Please choose a request to fulfill or type \"close\" to close the game");
+            if(requests.size()>0){    
+                for (int i = 0; i < requests.size(); i++) {
+                    System.out.println("" + i + ":");
+                    requests.get(i).output();
+                }
+            }
+            
+            String in = input.next();
+            if(in.compareToIgnoreCase("close") == 0){
+                System.exit(0);
+            }
+            else{
+                int choice = Integer.parseInt(in);
+                
+                if(choice<main.numRequests()){
+                    main.acceptRequest(requests.get(choice));
+                }
+            }
         }
+        System.out.println("You Win!!");
+        System.exit(0);
     }
 }

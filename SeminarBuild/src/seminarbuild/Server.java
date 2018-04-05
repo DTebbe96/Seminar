@@ -16,19 +16,27 @@ import javafx.collections.*;
  *
  * @author Dakota
  */
-public class Server {
+public class Server implements Runnable{
 
     private ObservableList<Player> activePlayers;
     private Film[] movieList;
     private int uptime;
+    private String[] users = {"John", "Katie", "Sarah", "James", "Kronath the Unyielding",
+        "Barbara", "Timothy"};
+    private int round;
+    
+    private BufferedWriter out;
 
     Server(ObservableList<Player> players) {
         this.activePlayers = players;
         this.pullFilms();
         this.uptime = 0;
-        
+
+        this.round = 0;
+
         try {
             this.activePlayers.add(new PcPlayer(InetAddress.getLocalHost().getHostAddress()));
+            this.out = new BufferedWriter(new FileWriter("log.txt"));
         } catch (Exception e) {
             System.out.println("Unable to find Ip address");;
         }
@@ -36,20 +44,21 @@ public class Server {
             this.activePlayers.add(new NpcPlayer("Not Available"));
         }
         this.assignFilms();
+        this.addRequests();
     }
-    
-    private void pullFilms(){
-        ArrayList <Film> tempList = new ArrayList();
+
+    private void pullFilms() {
+        ArrayList<Film> tempList = new ArrayList();
         BufferedReader in = null;
-        
+
         try {
             in = new BufferedReader(new FileReader("Films.txt"));
-            
+
             String name;
-            while ((name = in.readLine()) != null){
+            while ((name = in.readLine()) != null) {
                 int bandCons = Integer.parseInt(in.readLine());
                 int dur = Integer.parseInt(in.readLine());
-                
+
                 Film tempFilm = new Film(name, bandCons, dur);
                 tempList.add(tempFilm);
             }
@@ -60,53 +69,55 @@ public class Server {
     }
 
     private void assignFilms() {
-//        PcPlayer test = null;
-//        try{
-//            test = new PcPlayer(InetAddress.getLocalHost().getHostAddress());
-//        }catch(Exception e){}
-//        test.addMovie(new Film("Lilt", 1, 20));
-//        test.addMovie(new Film("Lilt", 1, 10));
-//        test.addMovie(new Film("Lilt", 1, 50));
-//        
-//        activePlayers.add(test);
-        
+
         Random randnum = new Random();
-        
+
         for (int i = 0; i < this.activePlayers.size(); i++) {
-            Player tempPlay = (Player)this.activePlayers.get(i);
-            
-            while(tempPlay.cacheAvail() > 0){
+            Player tempPlay = (Player) this.activePlayers.get(i);
+
+            while (tempPlay.cacheAvail() > 0) {
                 Film tempFilm = this.movieList[randnum.nextInt(this.movieList.length)];
-                System.out.println("Giving " + tempPlay.getName() + " Film " + tempFilm.getTitle());
+                try {
+                    this.out.write("Giving player " + tempPlay.getName() + " Film " + tempFilm.getTitle());
+                } catch (IOException ex) {
+                    System.out.println("Couldn't output to file");
+                }
                 boolean success = tempPlay.addMovie(tempFilm);
-                if(!success){
-                    System.out.println("Already has film in cache");
+                if (!success) {
+                    try {
+                        this.out.write("Already has film in cache");
+                    } catch (IOException ex) {
+                        System.out.println("Couldn't output to file");
+                    }
                 }
             }
         }
     }
-    
-    public void accept(FilmRequest request){
+
+    public void accept(FilmRequest request) {
         System.out.println("Accepting " + request.getFilm().getTitle());
         this.activePlayers.get(0).acceptRequest(request);
     }
-    
-    private void addRequests(){
+
+    private void addRequests() {
         Random randnum = new Random();
-        
-        int i = 0;
-        Film tempFilm = this.movieList[randnum.nextInt(this.movieList.length)];
-        FilmRequest tempReq = new FilmRequest(tempFilm, tempFilm.getTitle());
-        Player temp = (Player)this.activePlayers.get(i);
-        temp.addRequest(tempReq);
+
+        for (int i = 0; i < this.activePlayers.size(); i++) {
+            while (this.activePlayers.get(i).numRequests() < 5) {
+                Film tempFilm = this.movieList[randnum.nextInt(this.movieList.length)];
+                FilmRequest tempReq = new FilmRequest(tempFilm, this.users[randnum.nextInt(this.users.length)]);
+                Player temp = (Player) this.activePlayers.get(i);
+                temp.addRequest(tempReq);
+            }
+        }
+
     }
-    
+
 //    public void sendMovie(PcPlayer p1, PcPlayer p2, Film movie){
 //        if(p1.removeMovie(movie)){
 //            p2.addMovie(movie);
 //        }
 //    }
-
     public ObservableList<Player> getPlayers() {
         return activePlayers;
     }
@@ -114,46 +125,66 @@ public class Server {
     public int getUptime() {
         int increase = 0;
         for (int i = 0; i < activePlayers.size(); i++) {
-            if(this.activePlayers.get(i).bandAvail()>0){
+            if (this.activePlayers.get(i).bandAvail() > 0) {
                 increase++;
-            }
-            else{
+            } else {
                 increase--;
             }
         }
         this.uptime += increase;
-        
+
         return this.uptime;
     }
-    
-    public void update(){
+
+    public int totalRequests() {
+        int total = 0;
+
+        for (int i = 0; i < this.activePlayers.size(); i++) {
+            total += this.activePlayers.get(0).numRequests();
+        }
+
+        return total;
+    }
+
+    public void update() {
         try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            this.out.write("Tick " + this.round + "\n");
+        } catch (Exception e) {
+            System.out.println("Unable to write to file");
         }
-        if(this.activePlayers.get(0).getRequests().size() < 2){
-            this.addRequests();
-            this.addRequests();
+        for (int i = 0; i < this.activePlayers.size(); i++) {
+            try {
+                this.out.write(this.activePlayers.get(i).getName());
+                this.out.write("Available Cache: " + this.activePlayers.get(1).cacheAvail()+ "\n");
+                this.out.write("Available Bandwith: " + this.activePlayers.get(1).bandAvail()+ "\n");
+                this.out.write("uptime: " + this.getUptime()+ "\n");
+                this.out.write("Requests:\n");
+                
+                Player temp = (Player) this.activePlayers.get(i);
+                ObservableList<FilmRequest> Requests = temp.getRequests();
+                for (FilmRequest request : Requests) {
+                    Film film = request.getFilm();
+                    this.out.write("------------------\n");
+                    this.out.write(" -Title: " + film.getTitle()+ "\n");
+                    this.out.write("  -Bandwidth Consumption: " + film.getBandConsum()+ "\n");
+                    this.out.write("  -Duration: " + request.getTime()+ "\n");
+                }
+                temp.update();
+            } catch (Exception e) {
+                System.out.println("Unable to write to file");
+            }
         }
+
         
-        System.out.println(this.activePlayers.get(0).getName());
-        System.out.println("Available Cache: " + this.activePlayers.get(0).cacheAvail());
-        System.out.println("Available Bandwith: " + this.activePlayers.get(0).bandAvail());
-        System.out.println("uptime: " + this.getUptime());
-        System.out.println("Requests:");
-        
-        Player temp = (Player)this.activePlayers.get(0);
-        ObservableList<FilmRequest> Requests = temp.getRequests();
-        for (FilmRequest request : Requests) {
-            Film film = request.getFilm();
-            System.out.println("------------------");
-            System.out.println(" -Title: " + film.getTitle());
-            System.out.println("  -Bandwidth Consumption: " + film.getBandConsum());
-            System.out.println("  -Duration: " + request.getTime());
+
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            
+            this.update();
         }
-        temp.update();
-        
     }
 
 }

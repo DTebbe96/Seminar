@@ -49,16 +49,27 @@ public class FilmRequest {
         boolean accept = false;
         try{
             this.accepted = true;
-            System.out.println("film accepted");
             accept = true;
         }catch(Exception e){
-            System.out.println("couldn't accept");
+            System.out.println("couldn't accept film");
         }
         return accept;
     }
     
     private void decTime(){
         this.timeRemaining--;
+    }
+    
+    public void output(){
+        System.out.println("Film: " + this.film.getTitle());
+        System.out.println("Requested by: " + this.getName());
+        System.out.println("Bandwidth Consumption: " + this.film.getBandConsum());
+        if(this.isAccepted()){
+            System.out.println("Time remaining: " + this.timeRemaining);
+        }
+        else{
+            System.out.println("Duration: " + this.film.getDuration());
+        }
     }
     
     public void update(){

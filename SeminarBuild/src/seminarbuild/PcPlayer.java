@@ -14,4 +14,6 @@ public class PcPlayer extends Player {
     PcPlayer(String ip){
         super(ip);
     }
+    
+    
 }
