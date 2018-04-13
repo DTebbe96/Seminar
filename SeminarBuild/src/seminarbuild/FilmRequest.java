@@ -13,7 +13,7 @@ public class FilmRequest {
 
     private Film film;
     private String name;
-    private int timeRemaining;
+    public int timeRemaining;
     private boolean accepted;
     private boolean filmComplete;
     
@@ -57,19 +57,23 @@ public class FilmRequest {
     }
     
     private void decTime(){
-        this.timeRemaining--;
+        if(this.timeRemaining>0){
+            this.timeRemaining--;
+        }
     }
-    
-    public void output(){
-        System.out.println("Film: " + this.film.getTitle());
-        System.out.println("Requested by: " + this.getName());
-        System.out.println("Bandwidth Consumption: " + this.film.getBandConsum());
+    @Override
+    public String toString(){
+        String output = "";
+        output += ("Film: " + this.film.getTitle() + "\n");
+        output += ("Requested by: " + this.getName() + "\n");
+        output += ("Bandwidth Consumption: " + this.film.getBandConsum() + "\n");
         if(this.isAccepted()){
-            System.out.println("Time remaining: " + this.timeRemaining);
+            output += ("Time remaining: " + this.timeRemaining);
         }
         else{
-            System.out.println("Duration: " + this.film.getDuration());
+            output += ("Duration: " + this.film.getDuration());
         }
+        return output;
     }
     
     public void update(){

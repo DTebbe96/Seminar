@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seminarbuild.FXMLController">
+   <children>
+      <HBox layoutY="8.0">
+         <children>
+            <ListView fx:id="films" />
+            <VBox alignment="TOP_CENTER">
+               <children>
+                  <HBox alignment="CENTER" maxHeight="51.0" maxWidth="380.0" prefHeight="51.0" prefWidth="380.0">
+                     <children>
+                        <Label text="Name: " />
+                        <TextField fx:id="name" />
+                     </children>
+                  </HBox>
+                  <LineChart fx:id="bandAvail" prefHeight="293.0" prefWidth="497.0">
+                    <xAxis>
+                      <NumberAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </LineChart>
+                  <Label fx:id="uptime" text="Uptime" />
+                  <ListView fx:id="npcs" onMouseClicked="#drop" orientation="HORIZONTAL" prefHeight="239.0" prefWidth="642.0" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="620.0" prefWidth="364.0">
+               <children>
+                  <HBox maxWidth="172.0" prefHeight="51.0" prefWidth="172.0">
+                     <children>
+                        <Button fx:id="start" mnemonicParsing="false" onAction="#handleStart" text="Start">
+                           <HBox.margin>
+                              <Insets right="15.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+                     </children>
+                  </HBox>
+                  <Label fx:id="totalRequests" text="Total Requests" />
+                  <ListView fx:id="filmRequests" onDragDetected="#drag" onDragDropped="#drop" onMouseClicked="#handleRequests" prefHeight="595.0" prefWidth="330.0" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

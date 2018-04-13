@@ -31,4 +31,17 @@ public class Film {
     public int getDuration(){
         return this.duration;
     }
+    
+    @Override 
+    public String toString(){
+        String output = "";
+        
+        output += ("Title: " + this.title + "\n");
+        
+        output += ("Bandwidth consumption: " + this.bandConsum + "\n");
+        
+        output += ("Duration: " + this.duration);
+        
+        return output;
+    }
 }

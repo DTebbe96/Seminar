@@ -21,16 +21,22 @@ public class Server implements Runnable{
     private ObservableList<Player> activePlayers;
     private Film[] movieList;
     private int uptime;
-    private String[] users = {"John", "Katie", "Sarah", "James", "Kronath the Unyielding",
-        "Barbara", "Timothy"};
+    private int downtime;
+    private String[] users;
     private int round;
     
     private BufferedWriter out;
+    
+    private FXMLController ui;
 
-    Server(ObservableList<Player> players) {
+    Server(ObservableList<Player> players, FXMLController ui) {
         this.activePlayers = players;
         this.pullFilms();
+        this.pullUsers();
         this.uptime = 0;
+        this.downtime = 1;
+        
+        this.ui = ui;
 
         this.round = 0;
 
@@ -46,6 +52,24 @@ public class Server implements Runnable{
         this.assignFilms();
         this.addRequests();
     }
+    
+    private void pullUsers(){
+        ArrayList<String> tempList = new ArrayList();
+        BufferedReader in = null;
+
+        try {
+            in = new BufferedReader(new FileReader("Users.txt"));
+
+            String name;
+            while ((name = in.readLine()) != null) {
+                tempList.add(name);
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading from file");
+        }
+        this.users = tempList.toArray(new String[tempList.size()]);
+    }
+    
 
     private void pullFilms() {
         ArrayList<Film> tempList = new ArrayList();
@@ -133,14 +157,18 @@ public class Server implements Runnable{
         }
         this.uptime += increase;
 
-        return this.uptime;
+        return (int)Math.ceil((1-(this.downtime/this.uptime))*100);
     }
 
     public int totalRequests() {
         int total = 0;
 
         for (int i = 0; i < this.activePlayers.size(); i++) {
-            total += this.activePlayers.get(0).numRequests();
+            total += this.activePlayers.get(i).numRequests();
+        }
+        
+        if (total == 0){
+            System.exit(0);
         }
 
         return total;
@@ -175,14 +203,18 @@ public class Server implements Runnable{
             }
         }
 
-        
+        ui.update();
 
     }
 
     @Override
     public void run() {
         while(true){
-            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                System.out.println("Sleep failed");;
+            }
             this.update();
         }
     }

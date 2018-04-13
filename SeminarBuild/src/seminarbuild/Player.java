@@ -131,7 +131,7 @@ public abstract class Player {
 
         for (int i = 0; i < this.requests.size(); i++) {
             FilmRequest f = this.requests.get(i);
-            if (f.isAccepted() && (f.getTime() == 0)) {
+            if (f.isAccepted() && (f.getTime() <= 0)) {
                 this.removeRequest(f);
             }
             f.update();

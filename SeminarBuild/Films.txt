@@ -1,15 +1,15 @@
 Lilt
 1
-10
+5
 Tallahasse
 1
-10
+5
 Space Fight
 1
-10
+5
 Above Fire
 1
-10
+5
 RoboWar
 1
-10
+5

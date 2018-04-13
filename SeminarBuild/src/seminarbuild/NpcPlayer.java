@@ -16,6 +16,17 @@ public class NpcPlayer extends Player {
     public NpcPlayer(String ip) {
         super(ip);
     }
+    
+    @Override
+    public String toString(){
+        String output = "";
+        
+        output += ("Name: " + this.getName() + "\n");
+        output += ("Cache available: " + this.cacheAvail() + "\n");
+        output += ("Bandwidth Available: " + this.bandAvail());
+        
+        return output;
+    }
 
     @Override
     public void update() {
