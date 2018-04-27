@@ -24,27 +24,33 @@ public class FilmRequest {
         this.accepted = false;
         this.filmComplete = false;
     }
-
+    
+    //returns the requesting user's name
     public String getName() {
         return this.name;
     }
-
+    
+    //returns the film
     public Film getFilm() {
         return this.film;
     }
     
+    //returns the remaining time
     public int getTime(){
         return this.timeRemaining;
     }
     
+    //returns whether or not the request has been accepted
     public boolean isAccepted(){
         return this.accepted;
     }
     
+    //returns whether or not the film has completed
     public boolean isComplete(){
         return this.filmComplete;
     }
     
+    //accepts the crrent request
     public boolean accept(){
         boolean accept = false;
         try{
@@ -56,11 +62,15 @@ public class FilmRequest {
         return accept;
     }
     
+    //decrements the time remaining
     private void decTime(){
         if(this.timeRemaining>0){
             this.timeRemaining--;
         }
     }
+    
+    //returns a string of the request's film name, user's name, the bandwidth
+    //consumption, and the duration or the time remaining if it's been accepted
     @Override
     public String toString(){
         String output = "";
@@ -76,6 +86,7 @@ public class FilmRequest {
         return output;
     }
     
+    //decrements the requests time if it's been accepted
     public void update(){
         if(this.accepted && this.timeRemaining!=0){
             this.decTime();

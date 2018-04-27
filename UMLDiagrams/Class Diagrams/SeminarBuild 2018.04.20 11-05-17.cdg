@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="SeminarBuild">
+  <ClassDiagramComponents>
+    <Class name="Film" package="seminarbuild" visibility="public" xPosition="896.0" yPosition="627.0">
+      <Fields>
+        <Field name="title" type="String" visibility="private"/>
+        <Field name="bandConsum" type="int" visibility="private"/>
+        <Field name="duration" type="int" visibility="private"/>
+        <Field name="acceptedFilms" type="ObservableList&lt;FilmRequest&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="package">
+          <Argument type="String" name="title"/>
+          <Argument type="int" name="bandConsum"/>
+          <Argument type="int" name="duration"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getTitle" returnType="String" visibility="public"/>
+        <Method name="getBandConsum" returnType="int" visibility="public"/>
+        <Method name="getDuration" returnType="int" visibility="public"/>
+        <Method name="addAcceptedRequest" returnType="void" visibility="public">
+          <Argument type="FilmRequest" name="accept"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+        <Method name="update" returnType="void" visibility="public"/>
+        <Method name="removeRequest" returnType="boolean" visibility="private">
+          <Argument type="FilmRequest" name="request"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="FilmRequest" package="seminarbuild" visibility="public" xPosition="542.0" yPosition="408.0">
+      <Fields>
+        <Field name="film" type="Film" visibility="private"/>
+        <Field name="name" type="String" visibility="private"/>
+        <Field name="timeRemaining" type="int" visibility="public"/>
+        <Field name="accepted" type="boolean" visibility="private"/>
+        <Field name="filmComplete" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="package">
+          <Argument type="Film" name="film"/>
+          <Argument type="String" name="name"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="getFilm" returnType="Film" visibility="public"/>
+        <Method name="getTime" returnType="int" visibility="public"/>
+        <Method name="isAccepted" returnType="boolean" visibility="public"/>
+        <Method name="isComplete" returnType="boolean" visibility="public"/>
+        <Method name="accept" returnType="boolean" visibility="public"/>
+        <Method name="decTime" returnType="void" visibility="private"/>
+        <Method name="toString" returnType="String" visibility="public"/>
+        <Method name="update" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="FXMLController" package="seminarbuild" visibility="public" xPosition="47.0" yPosition="938.0">
+      <Fields>
+        <Field name="filmRequests" type="ListView&lt;FilmRequest&gt;" visibility="package"/>
+        <Field name="films" type="ListView&lt;Film&gt;" visibility="package"/>
+        <Field name="npcs" type="ListView&lt;Player&gt;" visibility="package"/>
+        <Field name="players" type="ObservableList&lt;Player&gt;" visibility="package"/>
+        <Field name="requests" type="ObservableList&lt;FilmRequest&gt;" visibility="package"/>
+        <Field name="name" type="TextField" visibility="package"/>
+        <Field name="totalRequests" type="Label" visibility="package"/>
+        <Field name="uptime" type="Label" visibility="package"/>
+        <Field name="start" type="Button" visibility="package"/>
+        <Field name="accept" type="Button" visibility="package"/>
+        <Field name="transfer" type="Button" visibility="package"/>
+        <Field name="mainFilms" type="ObservableList&lt;Film&gt;" visibility="package"/>
+        <Field name="tempRequest" type="FilmRequest" visibility="package"/>
+        <Field name="canTransfer" type="Boolean" visibility="package"/>
+        <Field name="x" type="NumberAxis" visibility="package"/>
+        <Field name="y" type="NumberAxis" visibility="package"/>
+        <Field name="test" type="int" visibility="package"/>
+        <Field name="bandAvail" type="LineChart&lt;Integer, Integer&gt;" visibility="package"/>
+        <Field name="main" type="Player" visibility="package"/>
+        <Field name="game" type="Server" visibility="package"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="onRequestClick" returnType="void" visibility="public">
+          <Argument type="Event" name="e"/>
+        </Method>
+        <Method name="accept" returnType="void" visibility="public">
+          <Argument type="Event" name="e"/>
+        </Method>
+        <Method name="handleStart" returnType="void" visibility="public">
+          <Argument type="ActionEvent" name="e"/>
+        </Method>
+        <Method name="transfer" returnType="void" visibility="public">
+          <Argument type="Event" name="e"/>
+        </Method>
+        <Method name="receiveTransfer" returnType="void" visibility="public">
+          <Argument type="Event" name="e"/>
+        </Method>
+        <Method name="initialize" returnType="void" visibility="public">
+          <Argument type="URL" name="location"/>
+          <Argument type="ResourceBundle" name="resources"/>
+        </Method>
+        <Method name="setRequests" returnType="void" visibility="public"/>
+        <Method name="updateChart" returnType="void" visibility="public"/>
+        <Method name="update" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Main" package="seminarbuild" visibility="public" xPosition="1328.0" yPosition="1306.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="start" returnType="void" visibility="public">
+          <Argument type="Stage" name="stage"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="NpcPlayer" package="seminarbuild" visibility="public" xPosition="936.0" yPosition="136.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="ip"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="toString" returnType="String" visibility="public"/>
+        <Method name="update" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="PcPlayer" package="seminarbuild" visibility="public" xPosition="1216.0" yPosition="34.0">
+      <Fields/>
+      <Constructors>
+        <Constructor visibility="package">
+          <Argument type="String" name="ip"/>
+        </Constructor>
+      </Constructors>
+      <Methods/>
+    </Class>
+    <Class name="Player" package="seminarbuild" visibility="public" isAbstract="true" xPosition="1477.0" yPosition="422.0">
+      <Fields>
+        <Field name="username" type="String" visibility="private"/>
+        <Field name="availableFilms" type="ObservableList&lt;Film&gt;" visibility="private"/>
+        <Field name="maxCache" type="int" visibility="private"/>
+        <Field name="bandwidth" type="int" visibility="private"/>
+        <Field name="requests" type="ObservableList&lt;FilmRequest&gt;" visibility="protected"/>
+        <Field name="ip" type="String" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="package">
+          <Argument type="String" name="ip"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="numRequests" returnType="int" visibility="public"/>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="getFilmCache" returnType="ObservableList" visibility="public"/>
+        <Method name="setName" returnType="void" visibility="public">
+          <Argument type="String" name="name"/>
+        </Method>
+        <Method name="getRequests" returnType="ObservableList&lt;FilmRequest&gt;" visibility="public"/>
+        <Method name="setRequests" returnType="void" visibility="public">
+          <Argument type="ObservableList&lt;FilmRequest&gt;" name="requests"/>
+        </Method>
+        <Method name="cacheAvail" returnType="int" visibility="public"/>
+        <Method name="bandAvail" returnType="int" visibility="public"/>
+        <Method name="findFilm" returnType="int" visibility="private">
+          <Argument type="Film" name="f"/>
+        </Method>
+        <Method name="addMovie" returnType="boolean" visibility="public">
+          <Argument type="Film" name="film"/>
+        </Method>
+        <Method name="findRequest" returnType="int" visibility="private">
+          <Argument type="FilmRequest" name="request"/>
+        </Method>
+        <Method name="addRequest" returnType="void" visibility="public">
+          <Argument type="FilmRequest" name="request"/>
+        </Method>
+        <Method name="removeRequest" returnType="void" visibility="public">
+          <Argument type="FilmRequest" name="request"/>
+        </Method>
+        <Method name="acceptRequest" returnType="boolean" visibility="public">
+          <Argument type="FilmRequest" name="request"/>
+        </Method>
+        <Method name="getIp" returnType="String" visibility="public"/>
+        <Method name="update" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Server" package="seminarbuild" visibility="public" xPosition="74.0" yPosition="34.0">
+      <Fields>
+        <Field name="activePlayers" type="ObservableList&lt;Player&gt;" visibility="private"/>
+        <Field name="movieList" type="Film[]" visibility="private"/>
+        <Field name="uptime" type="int" visibility="private"/>
+        <Field name="downtime" type="int" visibility="private"/>
+        <Field name="users" type="String[]" visibility="private"/>
+        <Field name="round" type="int" visibility="private"/>
+        <Field name="out" type="BufferedWriter" visibility="private"/>
+        <Field name="ui" type="FXMLController" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="package">
+          <Argument type="ObservableList&lt;Player&gt;" name="players"/>
+          <Argument type="FXMLController" name="ui"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="pullUsers" returnType="void" visibility="private"/>
+        <Method name="pullFilms" returnType="void" visibility="private"/>
+        <Method name="assignFilms" returnType="void" visibility="private"/>
+        <Method name="accept" returnType="void" visibility="public">
+          <Argument type="FilmRequest" name="request"/>
+        </Method>
+        <Method name="addRequests" returnType="void" visibility="private"/>
+        <Method name="getPlayers" returnType="ObservableList&lt;Player&gt;" visibility="public"/>
+        <Method name="getUptime" returnType="int" visibility="public"/>
+        <Method name="totalRequests" returnType="int" visibility="public"/>
+        <Method name="update" returnType="void" visibility="public"/>
+        <Method name="run" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <UseRelation source="seminarbuild.FilmRequest" target="seminarbuild.Film" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="films" source="seminarbuild.FXMLController" target="seminarbuild.Film" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ListView&lt;Film&gt;"/>
+    <UseRelation source="seminarbuild.Film" target="seminarbuild.FilmRequest" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="seminarbuild.Player" target="seminarbuild.FilmRequest" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="players" source="seminarbuild.FXMLController" target="seminarbuild.Player" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;Player&gt;"/>
+    <HasRelation name="npcs" source="seminarbuild.FXMLController" target="seminarbuild.Player" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ListView&lt;Player&gt;"/>
+    <UseRelation source="seminarbuild.Server" target="seminarbuild.Player" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="seminarbuild.PcPlayer" target="seminarbuild.Player"/>
+    <IsRelation name="is" source="seminarbuild.NpcPlayer" target="seminarbuild.Player"/>
+    <HasRelation name="activePlayers" source="seminarbuild.Server" target="seminarbuild.Player" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;Player&gt;"/>
+    <HasRelation name="game" source="seminarbuild.FXMLController" target="seminarbuild.Server" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="requests" source="seminarbuild.FXMLController" target="seminarbuild.FilmRequest" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;FilmRequest&gt;"/>
+    <HasRelation name="availableFilms" source="seminarbuild.Player" target="seminarbuild.Film" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;Film&gt;"/>
+    <HasRelation name="film" source="seminarbuild.FilmRequest" target="seminarbuild.Film" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="acceptedFilms" source="seminarbuild.Film" target="seminarbuild.FilmRequest" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;FilmRequest&gt;"/>
+    <HasRelation name="tempRequest" source="seminarbuild.FXMLController" target="seminarbuild.FilmRequest" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="seminarbuild.Server" target="seminarbuild.FilmRequest" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="main" source="seminarbuild.FXMLController" target="seminarbuild.Player" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="ui" source="seminarbuild.Server" target="seminarbuild.FXMLController" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="requests" source="seminarbuild.Player" target="seminarbuild.FilmRequest" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;FilmRequest&gt;"/>
+    <UseRelation source="seminarbuild.Player" target="seminarbuild.Film" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mainFilms" source="seminarbuild.FXMLController" target="seminarbuild.Film" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;Film&gt;"/>
+    <HasRelation name="filmRequests" source="seminarbuild.FXMLController" target="seminarbuild.FilmRequest" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ListView&lt;FilmRequest&gt;"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

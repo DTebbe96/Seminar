@@ -15,22 +15,26 @@ import javafx.collections.*;
 public abstract class Player {
 
     private String username;
-    private ArrayList<Film> availableFilms;
+    private ObservableList<Film> availableFilms;
     private int maxCache;
     private int bandwidth;
     protected ObservableList<FilmRequest> requests;
     private String ip;
+    public boolean transfer = false;
+    public FilmRequest transFilm = null;
 
     Player(String ip) {
         this.ip = ip;
-        this.username = "" + (int) (System.currentTimeMillis() / 10000);
+        this.username = "Player " + (int) new Random().nextInt(500);
         Random randnum = new Random();
         this.bandwidth = 5;
         this.maxCache = 4;
-        this.availableFilms = new ArrayList<>();
+        this.availableFilms = FXCollections.observableArrayList();
         this.requests = FXCollections.observableArrayList();
     }
     
+    
+    //returns the number of requests for the current player
     public int numRequests(){
         int num = 0;
         
@@ -40,45 +44,53 @@ public abstract class Player {
         
         return num;
     }
-
+    
+    //Returns the Player's name
     public String getName() {
         return this.username;
     }
-
-    public Film[] getFilmCache() {
-        Film[] tempFilms = (Film[]) this.availableFilms.toArray(new Film[this.availableFilms.size()]);
-        return tempFilms;
+    
+    //Returns the player's filmCache
+    public ObservableList getFilmCache() {
+        return this.availableFilms;
     }
-
+    
+    //Sets the player's name
     public void setName(String name) {
         this.username = name;
     }
 
+    //Returns an observable list of the player's requests
     public ObservableList<FilmRequest> getRequests() {
         return requests;
     }
-
+    
+    //Sets the player's requests to a given ObservableList of FilmRequests
     public void setRequests(ObservableList<FilmRequest> requests) {
         this.requests = requests;
     }
 
+    //returns the current available film cache
     public int cacheAvail() {
         return this.maxCache - this.availableFilms.size();
     }
 
+    //calculates and returns the available bandwidth for the player
     public int bandAvail() {
         int usedBand = 0;
 
-        for (int i = 0; i < this.requests.size(); i++) {
-            if (this.requests.get(i).isAccepted() && !this.requests.get(i).isComplete()) {
-                Film tempFilm = this.requests.get(i).getFilm();
-                usedBand += tempFilm.getBandConsum();
-            }
-
+        for (int i = 0; i < this.availableFilms.size(); i++) {
+            usedBand += this.availableFilms.get(i).getBandConsum();
         }
         return this.bandwidth - usedBand;
     }
+    
+    //Returns the location of a film in the cache
+    public int findFilm(Film f){
+        return this.availableFilms.indexOf(f);
+    }
 
+    //Adds a new film to the cache
     public boolean addMovie(Film film) {
         if (!this.availableFilms.contains(film)) {
             this.availableFilms.add(film);
@@ -87,7 +99,7 @@ public abstract class Player {
             return false;
         }
     }
-
+    //code for removing a film from the cache, currently unused
 //    public boolean removeMovie(Film film){
 //        if(this.availableFilms.containsValue(film)){
 //            this.availableFilms.remove(film.getTitle(), film);
@@ -97,44 +109,55 @@ public abstract class Player {
 //            return false;
 //        }
 //    }
-    private int findRequest(FilmRequest request) {
+    
+    //returns the location of a FilmRequest
+    public int findRequest(FilmRequest request) {
         return this.requests.indexOf(request);
     }
 
+    //Adds a new request to the list
     public void addRequest(FilmRequest request) {
 
         this.requests.add(request);
 
     }
-
+    
+    //removes a quest
     public void removeRequest(FilmRequest request) {
         this.requests.remove(request);
     }
-
+    
+    //This function locates a request in the FilmRequests and, if it's found,
+    //accepts it
     public boolean acceptRequest(FilmRequest request) {
         boolean accepted = false;
 
         int location = this.findRequest(request);
         if (location != -1) {
-            System.out.println("accepted");
-            accepted = this.requests.get(location).accept();
+            Film temp = this.requests.get(location).getFilm();
+            location = this.findFilm(temp);
+            if(location != -1){
+                accepted = true;
+                System.out.println("accepted");
+                this.requests.remove(request);
+                request.accept();
+                this.availableFilms.get(location).addAcceptedRequest(request);
+            }
         }
 
         return accepted;
     }
-
+    
+    //returns the players IP address (unused)
     public String getIp() {
         return ip;
     }
-
+    
+    //Calls the update method for each of its cached films
     public void update() {
 
-        for (int i = 0; i < this.requests.size(); i++) {
-            FilmRequest f = this.requests.get(i);
-            if (f.isAccepted() && (f.getTime() <= 0)) {
-                this.removeRequest(f);
-            }
-            f.update();
+        for (int i = 0; i < this.availableFilms.size(); i++) {
+            this.availableFilms.get(i).update();
         }
     }
 

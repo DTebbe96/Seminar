@@ -28,7 +28,7 @@ public class Server implements Runnable{
     private BufferedWriter out;
     
     private FXMLController ui;
-
+    //simply sets all attributes for the game to begin
     Server(ObservableList<Player> players, FXMLController ui) {
         this.activePlayers = players;
         this.pullFilms();
@@ -52,7 +52,7 @@ public class Server implements Runnable{
         this.assignFilms();
         this.addRequests();
     }
-    
+    //gets the list of names for users requesting films from the file
     private void pullUsers(){
         ArrayList<String> tempList = new ArrayList();
         BufferedReader in = null;
@@ -70,7 +70,8 @@ public class Server implements Runnable{
         this.users = tempList.toArray(new String[tempList.size()]);
     }
     
-
+    //gets the list of films from the file along with their duration and
+    //bandwidth consumption
     private void pullFilms() {
         ArrayList<Film> tempList = new ArrayList();
         BufferedReader in = null;
@@ -91,7 +92,9 @@ public class Server implements Runnable{
         }
         this.movieList = tempList.toArray(new Film[tempList.size()]);
     }
-
+    
+    //Randomly assigns films to each player in the game based on the player's
+    //available cache
     private void assignFilms() {
 
         Random randnum = new Random();
@@ -117,12 +120,13 @@ public class Server implements Runnable{
             }
         }
     }
-
+    //Handles accepting of requests for the main player
     public void accept(FilmRequest request) {
         System.out.println("Accepting " + request.getFilm().getTitle());
         this.activePlayers.get(0).acceptRequest(request);
     }
-
+    
+    //Randomly adds five requests to each player
     private void addRequests() {
         Random randnum = new Random();
 
@@ -136,30 +140,38 @@ public class Server implements Runnable{
         }
 
     }
-
+    
+    //unused code for sending movies between players that may be re added in the
+    //future
 //    public void sendMovie(PcPlayer p1, PcPlayer p2, Film movie){
 //        if(p1.removeMovie(movie)){
 //            p2.addMovie(movie);
 //        }
 //    }
+    
+    //Returns an ObservableList of all the in game players, only used for the UI
     public ObservableList<Player> getPlayers() {
         return activePlayers;
     }
-
+    
+    //Calculates and returns the network uptime percentage
     public int getUptime() {
-        int increase = 0;
+        int increaseUP = 0;
+        int increaseDown = 0;
         for (int i = 0; i < activePlayers.size(); i++) {
             if (this.activePlayers.get(i).bandAvail() > 0) {
-                increase++;
+                increaseUP++;
             } else {
-                increase--;
+                increaseDown++;
             }
         }
-        this.uptime += increase;
+        this.uptime += increaseUP;
+        this.downtime+=increaseDown;
 
         return (int)Math.ceil((1-(this.downtime/this.uptime))*100);
     }
-
+    
+    //counts the total number of unaccepted requests remaining for each player
     public int totalRequests() {
         int total = 0;
 
@@ -173,14 +185,16 @@ public class Server implements Runnable{
 
         return total;
     }
-
+    
+    //calls each individual player's update method and the UI's update method
     public void update() {
         try {
             this.out.write("Tick " + this.round + "\n");
         } catch (Exception e) {
             System.out.println("Unable to write to file");
         }
-        for (int i = 0; i < this.activePlayers.size(); i++) {
+        int size = this.activePlayers.size();
+        for (int i = 0; i < size; i++) {
             try {
                 this.out.write(this.activePlayers.get(i).getName());
                 this.out.write("Available Cache: " + this.activePlayers.get(1).cacheAvail()+ "\n");
@@ -189,6 +203,8 @@ public class Server implements Runnable{
                 this.out.write("Requests:\n");
                 
                 Player temp = (Player) this.activePlayers.get(i);
+                
+                
                 ObservableList<FilmRequest> Requests = temp.getRequests();
                 for (FilmRequest request : Requests) {
                     Film film = request.getFilm();
@@ -206,7 +222,8 @@ public class Server implements Runnable{
         ui.update();
 
     }
-
+    
+    //Designed to just continuously update the game every second
     @Override
     public void run() {
         while(true){

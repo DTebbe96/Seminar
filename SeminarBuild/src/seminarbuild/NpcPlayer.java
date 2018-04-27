@@ -17,6 +17,8 @@ public class NpcPlayer extends Player {
         super(ip);
     }
     
+    //Returns a string of the player's name, available cache, and available
+    //bandwidth
     @Override
     public String toString(){
         String output = "";
@@ -28,6 +30,10 @@ public class NpcPlayer extends Player {
         return output;
     }
 
+    //The update method is where the AI logic is held. Currently, all it does is
+    // have an 1/(n+1) chance of doing nothing, and otherwise it will accept a 
+    //random request if it has not already accepted one. This will also remove
+    //requests that have been accepted and completed
     @Override
     public void update() {
         Random rand = new Random();
